@@ -73,6 +73,15 @@ resource "aws_subnet" "database" {
     }
   )
 }
+# Create database subnet groups
+resource "aws_db_subnet_group" "default" {
+  name       = "${local.name}"
+  subnet_ids = aws_subnet.database[*].id
+
+  tags = {
+    Name = "${local.name}"
+  }
+}
 
 # 7. create elastic IP
 resource "aws_eip" "eip" {
