@@ -25,13 +25,13 @@ resource "aws_internet_gateway" "gw" {
   )
 }
 
-# 3. Get availability Zones
+# 3. Get availability Zones through data source
 # 4. Create Public subnets
 resource "aws_subnet" "public" {
-  count = length(var.public_subnets_cidr)
+  count = length(var.public_subnets_cidr) # loop the public subnets cidr's as we have 2 cidr's
   vpc_id     = aws_vpc.vpc_module.id
-  cidr_block = var.public_subnets_cidr[count.index]
-  availability_zone = local.az_names[count.index]
+  cidr_block = var.public_subnets_cidr[count.index] #oop the public subnets cidr's as we have 2 cidr's
+  availability_zone = local.az_names[count.index]  #loop the public subnets cidr's as we have 2 cidr's
   map_public_ip_on_launch = true
   #availability_zone = slice(data.aws_availability_zones.azs.names,0,2)[count.index]
   tags = merge(
@@ -170,7 +170,7 @@ resource "aws_route" "database" {
 # 13. Associte public route table to public subnets
 resource "aws_route_table_association" "public" {
   count = length(var.public_subnets_cidr)
-  subnet_id      = element(aws_subnet.public[*].id, count.index)
+  subnet_id      = element(aws_subnet.public[*].id, count.index) # [*] means -take all the elements from public subnet.id
   route_table_id = aws_route_table.public.id
 }
 
